@@ -1,0 +1,5 @@
+deploy.sh
+*egg-info
+build
+dist
+*.py[cod]
