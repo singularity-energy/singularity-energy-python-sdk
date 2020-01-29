@@ -1,7 +1,7 @@
 __title__ = 'singularity_energy'
 __description__ = 'Python SDK for api.singularity.energy'
 __url__ = 'https://www.singularity.energy'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __author__ = 'Ryan Baker <ryan.baker@singularity.energy>'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2020 Singularity Energy'
