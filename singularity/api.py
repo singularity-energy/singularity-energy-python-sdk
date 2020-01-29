@@ -3,6 +3,7 @@ from json import JSONDecodeError
 
 import requests as req
 
+from .__version__ import __version__
 from .exceptions import APIException, GatewayTimeoutException
 
 
@@ -53,6 +54,7 @@ class SingularityAPI(object):
     def _get_headers(self):
         return {
             'X-Api-Key': self.api_key,
+            'User-Agent': 'Python/Singularity SDK v{}'.format(__version__)
         }
 
 
@@ -168,7 +170,7 @@ class SingularityAPI(object):
         url = self.BASE_URL + '/v1/emissions/all-factors'
         res = req.get(url, headers=self._get_headers())
         if res.status_code == 200:
-            return res.json()['data']['generated_intensity']
+            return res.json()
         else:
             _handle_error(res)
 
