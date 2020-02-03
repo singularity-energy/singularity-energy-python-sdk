@@ -1,5 +1,6 @@
 class APIException(Exception):
     """An exception for API errors."""
+
     def __init__(self, error_code, error_detail, status_code=None):
         """Create a new error
 

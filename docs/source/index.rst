@@ -1,14 +1,14 @@
 Singularity Python SDK
 ==================================================
 
-Guide:
-^^^^^^
-
 .. toctree::
    :maxdepth: 2
    :caption: Guide:
 
    install
+   getting_started
+   full_api
+   exceptions
    license
    help
 
