@@ -3,7 +3,7 @@ Singularity Python SDK
 
 .. toctree::
    :maxdepth: 2
-   :caption: Guide:
+   :caption: Usage:
 
    install
    getting_started
@@ -12,6 +12,13 @@ Singularity Python SDK
    license
    help
 
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Notes:
+
+   notes/event_types
+   notes/regions
 
 
 Indices and tables

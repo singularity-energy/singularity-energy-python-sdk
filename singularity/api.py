@@ -83,7 +83,7 @@ class SingularityAPI(object):
             url = '{}/v1/region_events/search?region={}&start={}&end={}&event_type={}'\
                 .format(
                     self.BASE_URL,
-                    region.name,
+                    str(region),
                     start,
                     end,
                     event_type
@@ -184,7 +184,7 @@ class SingularityAPI(object):
 
         Regions are updated often so check back soon if you want to use one that isn't listed.
 
-        The region events that are currently supported can be found in the notes section of the documentation.
+        The :ref:`region events <Event Types>` that are currently supported can be found in the notes section of the documentation.
 
         Usage::
 
