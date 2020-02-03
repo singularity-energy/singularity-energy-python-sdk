@@ -2,6 +2,8 @@
 
 This package is the Python integration for real time energy data powered by [Singularity](https://www.singularity.energy)
 
+Read the full documentation on our [readthedocs page](https://singularity-energy.readthedocs.io/en/latest/)
+
 ## Examples
 
 Here are a couple examples you can use to get started:
