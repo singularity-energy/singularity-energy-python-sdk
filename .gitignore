@@ -3,3 +3,4 @@ deploy.sh
 build
 dist
 *.py[cod]
+.vscode
