@@ -234,3 +234,25 @@ class SingularityAPI(object):
             return res.json()['data']
         else:
             _handle_error(res)
+
+    def carbon_flow_by_region(self, datestring, regions=['ISONE', 'NYISO', 'PJM', 'IESO']):
+        """Get the region_flow and carbon_intensity for the listed regions.
+
+        :datestring string: the ISO8601 string to use to find all the events
+        :regions string[]: (default: ['ISONE', 'NYISO', 'PJM', 'IESO']) the regions to search for
+        :returns: a dict of region codes -> carbon_intensity, region_flow & generated_fuel_mix
+            events for the timestamp
+        """
+        gathered = {}
+
+        for region in regions:
+            ci_event = self.search_region_events(Regions(region), 'carbon_intensity', datestring, datestring)
+            region_flow_event = self.search_region_events(Regions(region), 'region_flow', datestring, datestring)
+            gfm_event = self.search_region_events(Regions(region), 'generated_fuel_mix', datestring, datestring)
+            gathered[region] = {
+                'carbon_intensity': ci_event[0] if 0 < len(ci_event) else None,
+                'region_flow': region_flow_event[0] if 0 < len(region_flow_event) else None,
+                'generated_fuel_mix': gfm_event[0] if 0 < len(gfm_event) else None,
+            }
+
+        return gathered
