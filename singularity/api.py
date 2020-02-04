@@ -42,6 +42,7 @@ class Regions(Enum):
     IESO = 'IESO'
     PJM = 'PJM'
     SPP = 'SPP'
+    BPA = 'BPA'
 
 
 class SingularityAPI(object):
@@ -227,7 +228,7 @@ class SingularityAPI(object):
             _handle_error(res)
 
 
-    def calculate_generated_carbon_intensity(self, genfuelmix, region, source='EGRID_2016'):
+    def calculate_generated_carbon_intensity(self, genfuelmix, region, source='EGRID_2018'):
         """Calculate the intensity for a given genfuelmix.
 
         The generated rate is calculated by multiplying the generated MW for each fuel type
@@ -237,7 +238,7 @@ class SingularityAPI(object):
 
         :param genfuelmix: the `data` part of a `generated_fuel_mix` event
         :param region: a region from the Regions enum
-        :param source: (default: EGRID_2016) a string representing the source data to use
+        :param source: (default: EGRID_2018) a string representing the source data to use
             for the emission factors.
         :returns: the rate of carbon emissions for a genfuelmix in lbs/MWh
         :raises: an APIException if a bad response code is returned
@@ -255,12 +256,12 @@ class SingularityAPI(object):
             _handle_error(res)
 
 
-    def calculate_marginal_carbon_intensity(self, fuelmix_percents, region, source='EGRID_2016'):
+    def calculate_marginal_carbon_intensity(self, fuelmix_percents, region, source='EGRID_2018'):
         """Calculate the intensity for a given fuelmix percentage
 
         :param fuelmix_percents: the `data` part of a `marginal_fuel_mix` event
         :param region: a region from the Regions enum
-        :param source: (default: EGRID_2016) a string representing the source data to use
+        :param source: (default: EGRID_2018) a string representing the source data to use
             for the emission factors
         :returns: the rate of carbon emissions for a fuelmix in lbs/MWh
         :raises: an APIException if a bad response code is returned

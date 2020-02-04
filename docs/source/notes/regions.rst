@@ -12,6 +12,7 @@ span multiple states, or just a part of one state. The currently supported BAs a
  - `MISO <https://www.misoenergy.org/>`_ (Mid-continent stretch from TX to Manitoba)
  - `CAISO <http://www.caiso.com/Pages/default.aspx>`_ (California and some surrounding areas)
  - `SPP <https://www.spp.org/>`_ (Most of ND, SD, NE, KS, MS, OK, and some surrounding areas)
+ - `BPA <https://www.bpa.gov/>`_ (Washington)
 
 For more information on the other balancing authorities, take a look at the
 `EIA's page <https://www.eia.gov/todayinenergy/detail.php?id=27152>`_ on them.
