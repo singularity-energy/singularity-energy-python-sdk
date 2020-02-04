@@ -41,6 +41,7 @@ class Regions(Enum):
     MISO = 'MISO'
     IESO = 'IESO'
     PJM = 'PJM'
+    SPP = 'SPP'
 
 
 class SingularityAPI(object):
