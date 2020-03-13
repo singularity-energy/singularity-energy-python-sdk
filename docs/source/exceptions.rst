@@ -22,7 +22,7 @@ If this is the case, the response will be wrapped in an Exception object for you
 Known exceptions will wither be a `GatewayTimeoutException` or `APIException`.
 Here is an example of catching them::
 
-    from singularity import SingularityAPI, APIException, Regions
+    from singularity import SingularityAPI, APIException, Regions, GatewayTimeoutException
 
     singularity = SingularityAPI('API_KEY')
     e = None
@@ -34,6 +34,8 @@ Here is an example of catching them::
             '2020-01-03T00:00:00Z',
             filter_='natural_gas_marginal:1.0'
         )
+    except GatewayTimeoutException:
+        # feel free to retry
     except APIException as exc:
         e = exc
 

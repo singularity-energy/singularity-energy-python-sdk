@@ -7,7 +7,7 @@ many of the differen types of region events and how to interpret them.
 
 
 
-Generated Fuel Mix
+Fuel Mix
 ^^^^^^^^^^^^^^^^^^^
 All BAs listed in the :ref:`Regions` page have generated fuel mix (genfuelmix) events. Genfuelmix events
 are scraped directly from the BA and expanded to fit five minute windows. There are three different event
@@ -15,9 +15,13 @@ types that represent genfuelmix events:
 
  - raw.generated_fuel_mix: these events are not normalized to fit a 5-minute window and often the labels 
    in `data` are unchanged from the raw source of the event
+ - raw.marginal_fuel_mix: these events are listed for regions that expose their marginal_fuel_mix data. Most regions
+   do not expose this data.
  - generated_fuel_mix: these events are normalized to fit a 5-minute window and the labels have all been
    standardized across different regions. The only exception is ISONE, which includes the marginal flag
    for to note the fuels used when demand exceeds the forecast.
+ - marginal_fuel_mix: these events are either normalized from the data provided by the ISO or estimated by
+   Singularity.
  - forecast.generated_fuel_mix: these events are created based on a generated_fuel_mix event. Each
    generated_fuel_mix event will create between 12 and 24 different forecasts (from 5 minutes out to
    120 minutes out) and the forecast horizon is denoted in the `data` as the field
@@ -208,10 +212,11 @@ the marginal rate. Both of those values are a dedup_key of another event which c
 Plant Operation
 ^^^^^^^^^^^^^^^^
 
-Singularity also offers historical information on all energy plants in the US for the year 2019.
+Singularity also offers historical information on all large energy plants in the US for the year 2019.
 The event type to query is:
 
- - raw.plant_operation: event time put on 1 hour mark for every plant.
+ - raw.plant_operation: event time put on 1 hour mark for many plants.
+ - raw.plant_operation_summary: event time put on midnight UTC time of the start of the month for many plants.
 
 Here is an example event::
 
@@ -231,3 +236,59 @@ Here is an example event::
       'source': 'https://ampd.epa.gov/ampd/'},
     'region': 'USA.MA',
     'start_date': '2019-03-23T00:00:00+00:00'}
+
+    raw_plant_op_monthly = {'data': {'AER Fuel Type Code': 'OTH',
+                'Census Region': 'NEW',
+                'Combined Heat And Power Plant': 'N',
+                'EIA Sector Number': '2',
+                'Elec Fuel Consumption MMBtu': '0',
+                'Elec_MMBtu': '.',
+                'Elec_Quantity': '.',
+                'Electric Fuel Consumption Quantity': '489',
+                'MMBtuPer_Unit': '.',
+                'NAICS Code': '22',
+                'NERC Region': 'NPCC',
+                'Net Generation (Megawatthours)': '-85',
+                'Netgen': '.',
+                'Nuclear Unit Id': '.',
+                'Operator Id': '62122',
+                'Operator Name': 'Minuteman Eenergy Storage, LLC',
+                'Physical Unit Label': 'megawatthours',
+                'Plant Id': '62644',
+                'Plant Name': 'Minuteman Energy Storage',
+                'Plant State': 'MA',
+                'Quantity': '.',
+                'Reported Fuel Type Code': 'MWH',
+                'Reported Prime Mover': 'BA',
+                'Reserved': '',
+                'Sector Name': 'NAICS-22 Non-Cogen',
+                'Tot_MMBtu': '.',
+                'Total Fuel Consumption MMBtu': '0',
+                'Total Fuel Consumption Quantity': '489',
+                'YEAR': '2019'},
+      'dedup_key': 'USA.MA:raw.plant_operation_summary:EIA923,EIA860:62644.BA,MWH:2018-12-31T19:00:00+00:00',
+      'event_type': 'raw.plant_operation_summary',
+      'meta': {'inserted_at': '2020-03-09T20:51:44.399465Z',
+                'label descriptions': {'Elec Fuel Consumption': 'Year-To-Date',
+                                      'Elec_MMBtu': 'Quantity Consumed For '
+                                                    'Electricity (MMBtu)',
+                                      'Elec_Quantity': 'Quantity Consumed In '
+                                                        'Physical Units For Electric '
+                                                        'Generation',
+                                      'Electric Fuel Consumption': 'Year-To-Date',
+                                      'MMBtuPer_Unit': 'Heat Content Of Fuels '
+                                                        '(MMBtu Per Unit)',
+                                      'Net Generation': 'Year-To-Date',
+                                      'Netgen': 'Electricity Net Generation (MWh)',
+                                      'Quantity': 'Total Quantity Consumed In '
+                                                  'Physical Units (Consumed For '
+                                                  'Electric Generation And Useful '
+                                                  'Thermal Output)',
+                                      'Tot_MMBtu': 'Total Fuel Consumed (MMBtu)',
+                                      'Total Fuel Consumption': 'Year-To-Date'},
+                'month': 'January',
+                'scraped_at': '2020-03-09T20:03:49.815828Z',
+                'source': 'https://www.eia.gov/electricity/data/eia923/',
+                'technical notes from EIA': 'https://www.eia.gov/electricity/monthly/pdf/technotes.pdf'},
+      'region': 'USA.MA',
+      'start_date': '2018-12-31T19:00:00+00:00'}

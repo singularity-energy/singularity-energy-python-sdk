@@ -183,6 +183,8 @@ class SingularityAPI(object):
          - IESO
          - CAISO
          - MISO
+         - SPP
+         - BPA
 
         Regions are updated often so check back soon if you want to use one that isn't listed.
 

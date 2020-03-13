@@ -20,4 +20,9 @@ For more information on the other balancing authorities, take a look at the
 These regions will have the richest amount of events. We also have historical information
 on the 2019 plant emissions for all US-based energy plants that are part of `ADMP <https://ampd.epa.gov/ampd/>`_.
 The regions for those can be found as "USA.(2 letter state code)", for any state (e.g. USA.SC for all
-South Carolina based plants) and `raw.plant_operation` is the event_type
+South Carolina based plants) and `raw.plant_operation` is the event_type.
+
+We also have similar data that reports the plant generation for most plants in the US. The
+2019 `EIA 923 <https://www.eia.gov/electricity/data/eia923/>`_ data is available. The regions for the plants
+are "USA.(2 letter state code)" and the data is a monthly summary recorded at the first hour of every month.
+E.g. to get January's summary, request the data for Jan 1, 2019 at midnight UTC.
