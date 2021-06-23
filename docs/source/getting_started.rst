@@ -3,7 +3,7 @@ Getting Started
 
 Before you can start using Singularity's API, you need to have an API key.
 
-To get an API key, you can reach out to Ryan Baker (ryan.baker@singularity.energy) and ask for one.
+To get an API key, you can reach out to Jeff Burka (jeffrey.burka@singularity.energy) and ask for one.
 
 Once you have an API key, you can use the python SDK::
 

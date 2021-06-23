@@ -1,10 +1,9 @@
 from enum import Enum
-from json import JSONDecodeError
 
 import requests as req
 
 from .__version__ import __version__
-from .exceptions import APIException, GatewayTimeoutException
+from .exceptions import APIException
 
 
 def _handle_error(error_res):
@@ -56,10 +55,8 @@ class SingularityAPI(object):
 
     BASE_URL = 'https://api.singularity.energy'
 
-
     def __init__(self, api_key):
         self.api_key = api_key
-
 
     def _get_headers(self):
         return {
@@ -67,8 +64,7 @@ class SingularityAPI(object):
             'User-Agent': 'Python/Singularity SDK v{}'.format(__version__)
         }
 
-
-    def _format_search_url(self, region, event_type, start, end, postal_code, filter_):
+    def _format_search_url(self, region, event_type, start, end, postal_code, filter_, page, per_page):
         if region is None and postal_code is not None:
             url = '{}/v1/region_events/search?postal_code={}&start={}&end={}&event_type={}'\
                 .format(
@@ -78,9 +74,6 @@ class SingularityAPI(object):
                     end,
                     event_type
                 )
-            if filter_ is not None:
-                url += '&filter={}'.format(filter_)
-            return url
         else:
             url = '{}/v1/region_events/search?region={}&start={}&end={}&event_type={}'\
                 .format(
@@ -90,17 +83,19 @@ class SingularityAPI(object):
                     end,
                     event_type
                 )
-            if filter_ is not None:
-                url += '&filter={}'.format(filter_)
-            return url
-
+        if filter_ is not None:
+            url += '&filter={}'.format(filter_)
+        if page is not None:
+            url += '&page={}'.format(page)
+        if per_page is not None:
+            url += '&per_page={}'.format(page)
+        return url
 
     def _format_find_url(self, dedup_key):
         return '{}/v1/region_events/{}'.format(
             self.BASE_URL,
             dedup_key
         )
-
 
     def find_region_event(self, dedup_key):
         """Find an event by its dedup key.
@@ -113,7 +108,7 @@ class SingularityAPI(object):
             singularity = SingularityAPI('API_KEY')
             nowstring = dt.utcnow().isoformat() + 'Z'
             before = (dt.utcnow() - td(minutes=10)).isoformat() + 'Z'
-            events = singularity.search_region_events(
+            events, pagination = singularity.search_region_events(
                 Regions.ISONE,
                 'generated_fuel_mix',
                 before,
@@ -134,7 +129,6 @@ class SingularityAPI(object):
         else:
             _handle_error(res)
 
-
     def find_all_region_events(self, dedup_keys):
         """Find all events with the given dedup keys.
 
@@ -150,8 +144,7 @@ class SingularityAPI(object):
         else:
             _handle_error(res)
 
-
-    def search_region_events_for_postal_code(self, postal_code, event_type, start, end, filter_=None):
+    def search_region_events_for_postal_code(self, postal_code, event_type, start, end, filter_=None, page=None, per_page=None):
         """Search for region events by a postal code instead of a region.
 
         Currently only ISONE, NYISO, and PJM have mappings from postal code <> ISO region. Any postal codes
@@ -162,18 +155,20 @@ class SingularityAPI(object):
         :param start: an iso8601 datetime string with a timezone
         :param end: an iso8601 datetime string with a timezone
         :param filter_: (optional) a string in the format key:value to filter the events for
-        :returns: an array of data region events
+        :param page: (optional) a number to indicate which page of results to return
+        :param per_page: (optional) the number of events to return per page.
+            default is 300, maximum is 1,000
+        :returns: an array of region events, and a dict with pagination information
         :raises: APIException if there is a bad response code
         """
-        url = self._format_search_url(None, event_type, start, end, postal_code=postal_code, filter_=filter_)
+        url = self._format_search_url(None, event_type, start, end, postal_code, filter_, page, per_page)
         res = req.get(url, headers=self._get_headers())
         if res.status_code == 200:
-            return res.json()['data']
+            return res.json()['data'], res.json()['meta']['pagination']
         else:
             _handle_error(res)
 
-
-    def search_region_events(self, region, event_type, start, end, filter_=None):
+    def search_region_events(self, region, event_type, start, end, filter_=None, page=None, per_page=None):
         """Search for region events over a period of time.
 
         Currently, the supported regions are:
@@ -196,26 +191,28 @@ class SingularityAPI(object):
             s = SingularityAPI('API_KEY')
             region_string = 'PJM'
             region = Regions(region_string)  # or you can use Regions.PJM
-            s.search_region_events(region, 'carbon_intensity', '2020-01-20T00:00:00Z', '2020-01-21T00:00:00Z')
+            events, pagination = s.search_region_events(region, 'carbon_intensity', '2020-01-20T00:00:00Z', '2020-01-21T00:00:00Z')
 
 
         :param region: a region from the Regions enum
         :param event_type: an event type to search for
         :param start: an iso8601 datetime string with a timezone
         :param end: an iso8601 datetime string with a timezone
-        :param filter: a string in the format key:value to filter the events for.
+        :param filter_: a string in the format key:value to filter the events for.
             a filter either looks in `meta` or `data` objects. Filters must be
             in the format of `data.some_key:some_value`
-        :returns: an array of region events
+        :param page: (optional) a number to indicate which page of results to return
+        :param per_page: (optional) the number of events to return per page.
+            default is 300, maximum is 1,000
+        :returns: an array of region events, and a dict with pagination information
         :raises: APIException if there is a bad response code
         """
-        url = self._format_search_url(region, event_type, start, end, None, filter_)
+        url = self._format_search_url(region, event_type, start, end, None, filter_, page, per_page)
         res = req.get(url, headers=self._get_headers())
         if res.status_code == 200:
-            return res.json()['data']
+            return res.json()['data'], res.json()['meta']['pagination']
         else:
             _handle_error(res)
-
 
     def get_all_emission_factors(self):
         """Fetch all the emission factors available in the emissions API.
@@ -229,8 +226,7 @@ class SingularityAPI(object):
         else:
             _handle_error(res)
 
-
-    def calculate_generated_carbon_intensity(self, genfuelmix, region, source='EGRID_2018'):
+    def calculate_generated_carbon_intensity(self, genfuelmix, region, source='EGRID_2019'):
         """Calculate the intensity for a given genfuelmix.
 
         The generated rate is calculated by multiplying the generated MW for each fuel type
@@ -240,7 +236,7 @@ class SingularityAPI(object):
 
         :param genfuelmix: the `data` part of a `generated_fuel_mix` event
         :param region: a region from the Regions enum
-        :param source: (default: EGRID_2018) a string representing the source data to use
+        :param source: (default: EGRID_2019) a string representing the source data to use
             for the emission factors.
         :returns: the rate of carbon emissions for a genfuelmix in lbs/MWh
         :raises: an APIException if a bad response code is returned
@@ -257,13 +253,12 @@ class SingularityAPI(object):
         else:
             _handle_error(res)
 
-
-    def calculate_marginal_carbon_intensity(self, fuelmix_percents, region, source='EGRID_2018'):
+    def calculate_marginal_carbon_intensity(self, fuelmix_percents, region, source='EGRID_2019'):
         """Calculate the intensity for a given fuelmix percentage
 
         :param fuelmix_percents: the `data` part of a `marginal_fuel_mix` event
         :param region: a region from the Regions enum
-        :param source: (default: EGRID_2018) a string representing the source data to use
+        :param source: (default: EGRID_2019) a string representing the source data to use
             for the emission factors
         :returns: the rate of carbon emissions for a fuelmix in lbs/MWh
         :raises: an APIException if a bad response code is returned
@@ -280,19 +275,22 @@ class SingularityAPI(object):
         else:
             _handle_error(res)
 
-
-    def latest_region_events(self, region_or_postal_code, event_type='carbon_intensity'):
+    def latest_region_events(self, region_or_postal_code, event_type='carbon_intensity', emission_factor=None):
         """Get the latest region events for a region or postal code.
 
         :param region_or_postal_code: the region or postal code to query. Either a region from
             the Regions enum or a string of a postal code
-        :param event_type: (default: carbon_intensity) the event type to query for
+        :param event_type: (default: carbon_intensity) the forecast event type to query for
             currently only carbon_intensity and generated_fuel_mix are supported
+        :param emission_factor: (default: EGRID_u2018) he emission factor used to calculate carbon intensity
+            possible values: EGRID_u2018, EGRID_2018, EGRID_u2019, EGRID_2019
         :returns: a dict of the latest event and forecasts for the event
         :raises: an APIException if a bad response code is returned
         """
 
         url = self.BASE_URL + '/v1/region_events/{}/latest?event_type={}'.format(region_or_postal_code, event_type)
+        if emission_factor is not None:
+            url += '&emission_factor={}'.format(emission_factor)
         res = req.get(url, headers=self._get_headers())
         if res.status_code == 200:
             return res.json()['data']

@@ -19,7 +19,7 @@ singularity = SingularityAPI('API_KEY')
 
 end = datetime.utcnow()
 start = end - timedelta(hours=4)
-events = singularity.search_region_events(
+events, pagination = singularity.search_region_events(
   Regions.ISONE,
   'carbon_intensity',
   start.isoformat() + 'Z',

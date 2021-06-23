@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'Singularity Python SDK'
-copyright = '2020, Ryan Baker'
-author = 'Ryan Baker'
+copyright = '2020, Singularity Energy'
+author = 'Jeff Burka'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.7'
+release = '0.0.9'
 
 
 # -- General configuration ---------------------------------------------------
