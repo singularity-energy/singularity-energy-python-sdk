@@ -3,7 +3,7 @@ Getting Started
 
 Before you can start using Singularity's API, you need to have an API key.
 
-To get an API key, you can reach out to Jeff Burka (jeffrey.burka@singularity.energy) and ask for one.
+To get an API key, sign up for Carbonara_ or reach out to the team (carbonara@singularity.energy) and ask for one.
 
 Once you have an API key, you can use the python SDK::
 
@@ -18,3 +18,5 @@ Once you have an API key, you can use the python SDK::
     s_api.latest_region_events('02139')
 
 Singularity's API comes with a variety of requests you can make. To see more documentation on them :ref:`check out the API documentation<Singularity API>`
+
+.. _Carbonara: https://carbonara.singularity.energy/app/signup
